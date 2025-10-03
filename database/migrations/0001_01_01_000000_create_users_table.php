@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('username')->unique()->nullable();
             $table->string('password')->nullable();
             $table->string('fullname');
-            $table->string('email')->unique()->fillable();
+            $table->string('email')->unique()->nullable();
             $table->string('phone');
             $table->unsignedBigInteger('role_id');
             $table->softDeletes();
