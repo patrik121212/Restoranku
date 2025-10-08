@@ -70,4 +70,20 @@ class MenuController extends Controller
         }
         return response()->json(['success' => false]);
     }
+
+    public function removeCart(Request $request){
+        $itemId = $request->input('id');
+        $cart = Session::get('cart');
+        if (isset($cart[$itemId])){
+            unset($cart[$itemId]);
+            Session::put('cart', $cart);
+            Session::flash('success', 'Item berhasil dihapus dari keranjang');
+            return response()->json(['success' => true]);
+        }
+    }
+    public function clearCart(){
+        Session::forget('cart');
+        Session::flash('success', 'Keranjang berhasil dikosongkan');
+        return redirect()->route('cart');
+    }
 }

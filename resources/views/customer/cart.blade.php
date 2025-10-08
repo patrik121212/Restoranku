@@ -93,8 +93,8 @@
                     $total = $subTotal + $tax;
                 @endphp
                 <div class="d-flex justify-content-end">
-                    {{-- <a href="{{ route('cart.clear') }}" class="btn btn-danger" --}}
-                    onclick=" return confirm('Apakah Anda yakin ingin mengosongkan keranjang?')">Kosongkan Keranjang</a>
+                    <a href="{{ route('cart.clear') }}" class="btn btn-danger"
+                        onclick=" return confirm('Apakah Anda yakin ingin mengosongkan keranjang?')">Kosongkan Keranjang</a>
                 </div>
                 <div class="row g-4 justify-content-end mt-1">
                     <div class="col-8"></div>
@@ -169,6 +169,31 @@
                 .catch((error) => {
                     console.error('Error:', error);
                     alert('Terjadi kesalahan saat mengupdate keranjang');
+                });
+        }
+
+        function removeItemFromCart(itemId) {
+            fetch("{{ route('cart.remove') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        id: itemId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat menghapus item dari keranjang');
                 });
         }
     </script>
