@@ -86,4 +86,16 @@ class MenuController extends Controller
         Session::flash('success', 'Keranjang berhasil dikosongkan');
         return redirect()->route('cart');
     }
+
+    // checkout
+    public function checkout(
+    ){
+        $cart = Session :: get('cart');
+        if (empty($cart)){
+            return redirect()->route('cart')->with('error', 'Keranjang kosong, silahkan pilih menu terlebih dahulu');
+        }
+        $tableNumber  =  Session :: get('tableNumber');
+        return view('customer.checkout', compact('cart', 'tableNumber'));
+    }
+
 }

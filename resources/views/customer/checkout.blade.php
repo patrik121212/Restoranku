@@ -3,6 +3,12 @@
 @section('content')
 
     <!-- Checkout Page Start -->
+    <div class="container-fluid page-header py-5">
+        <h1 class="text-center text-white display-6">Checkout</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item active text-primary">Isi detail pembayaran anda</li>
+        </ol>
+    </div>
     <div class="container-fluid py-5">
         <div class="container py-5">
             <h1 class="mb-4">Detail Pembayaran</h1>
@@ -10,15 +16,21 @@
                 <div class="row g-5">
                     <div class="col-md-12 col-lg-6 col-xl-6">
                         <div class="row">
-                            <div class="col-md-12 col-lg-6">
+                            <div class="col-md-12 col-lg-4">
                                 <div class="form-item w-100">
                                     <label class="form-label my-3">Nama Lengkap<sup>*</sup></label>
-                                    <input type="text" class="form-control" disabled required>
+                                    <input type="text" class="form-control" required>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-lg-6">
+                            <div class="col-md-12 col-lg-4">
                                 <div class="form-item w-100">
                                     <label class="form-label my-3">Nomor WhatsApp<sup>*</sup></label>
+                                    <input type="text" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-lg-4">
+                                <div class="form-item w-100">
+                                    <label class="form-label my-3">Nomor Meja<sup>*</sup></label>
                                     <input type="text" class="form-control" disabled required>
                                 </div>
                             </div>
@@ -47,48 +59,32 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <th scope="row">
-                                                <div class="d-flex align-items-center mt-2">
-                                                    <img src="https://images.unsplash.com/photo-1591325418441-ff678baf78ef"
-                                                        class="img-fluid rounded-circle"
-                                                        style="width: 100px; height: 90px; object-fit: cover;"
-                                                        alt="">
-                                                </div>
-                                            </th>
-                                            <td class="py-5">Ichiraku Ramen</td>
-                                            <td class="py-5">Rp25.000,00</td>
-                                            <td class="py-5">1</td>
-                                            <td class="py-5">Rp25.000,00</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">
-                                                <div class="d-flex align-items-center mt-2">
-                                                    <img src="https://images.unsplash.com/photo-1543392765-620e968d2162?q=80&w=1987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA=="
-                                                        class="img-fluid rounded-circle"
-                                                        style="width: 100px; height: 90px; object-fit: cover;"
-                                                        alt="">
-                                                </div>
-                                            </th>
-                                            <td class="py-5">Beef Burger</td>
-                                            <td class="py-5">Rp40.000,00</td>
-                                            <td class="py-5">1</td>
-                                            <td class="py-5">Rp40.000,00</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">
-                                                <div class="d-flex align-items-center mt-2">
-                                                    <img src="https://images.unsplash.com/photo-1579954115545-a95591f28bfc"
-                                                        class="img-fluid rounded-circle"
-                                                        style="width: 100px; height: 90px; object-fit: cover;"
-                                                        alt="">
-                                                </div>
-                                            </th>
-                                            <td class="py-5">Big Banana</td>
-                                            <td class="py-5">Rp20.000,00</td>
-                                            <td class="py-5">1</td>
-                                            <td class="py-5">Rp20.000,00</td>
-                                        </tr>
+                                        @php
+                                            $subTotal = 0;
+                                        @endphp
+                                        @foreach (session('cart') as $item)
+                                            @php
+                                                $itemTotal = $item['price'] * $item['qty'];
+                                                $subTotal += $itemTotal;
+                                            @endphp
+                                            <tr>
+                                                <th scope="row">
+                                                    <div class="d-flex align-items-center mt-2">
+                                                        <img src="{{ asset('img_item_upload/' . $item['image']) }}"
+                                                            class="img-fluid me-5 rounded-circle"
+                                                            style="width: 80px; height: 80px;" alt=""
+                                                            onerror="this.onerror=null;this.src='{{ $item['image'] }}';">
+                                                    </div>
+                                                </th>
+                                                <td class="py-5">{{ $item['name'] }}</td>
+                                                <td class="py-5">{{ 'Rp' . number_format($item['price'], 0, ',', '.') }}
+                                                </td>
+                                                <td class="py-5">{{ $item['qty'] }}</td>
+                                                <td class="py-5">
+                                                    {{ 'Rp' . number_format($item['price'] * $item['qty'], 0, ',', '.') }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
@@ -146,6 +142,6 @@
                 </div>
             </form>
         </div>
+
     </div>
     <!-- Checkout Page End -->
-    @andsection
