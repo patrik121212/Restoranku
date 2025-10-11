@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Item;
+
 
 
 class MenuController extends Controller
@@ -96,6 +98,72 @@ class MenuController extends Controller
         }
         $tableNumber  =  Session :: get('tableNumber');
         return view('customer.checkout', compact('cart', 'tableNumber'));
+    }
+    // storeOrder
+    public function storeOrder(Request $request){
+        $cart = Session::get('cart');
+        $tableNumber = Session::get('tableNumber');
+        // mengecek apakah cart sudah terisi
+        if (empty($cart)){
+            return redirect()->route('cart')->with('eror', 'keranjang masih kosong');
+        }
+        // validator agar pelanggan  tidak asalan mengisi form
+        $validator = Validator::make($request->all(),[
+            'fullname'=> 'required|string|max:255',
+            'phone'=> 'required|string|max:15'
+        ]);
+        // membuat kondisi mengecek jika diluar persyaratan validator dia akan eror
+        if ($validator->fails()) {
+            return  redirect()->route('checkout')->withErrors($validator);
+        }
+        $total = 0;
+        foreach ($cart as $item){
+            $total += $item['price'] * $item['qty'];
+        }
+        // melakukan looping barang2 yang dibeli costumer lalu dimasukan ke order item
+        $totalAmount = 0;
+        foreach ($cart as $item) {
+            $totalAmount += $item['qty'] * $item ['price'];
+
+            $itemDetails[] = [
+                'id' => $item ['id'],
+                'price' => (int) $item ['price'] + ($item ['price']* 0.1),
+                'quantity' => $item ['qty'],
+                'name' => substr($item['name'], 0, 50),
+            ];
+        }
+        $user = User::firstOrCreate([
+            'fullname' => $request->input('fullname'),
+            'phone'=> $request->input('phone'),
+            'role_id'=> 4
+        ]);
+
+        $order = Order::create([
+            'order_code'=> 'ORD-'.$tableNumber. '-' . time(),
+            'user_id'=> $user->id,
+            'subtotal' => $totalAmount,
+            'tax' => 0.1 * $totalAmount,
+            'grandtotal'=> $totalAmount + (0.1 * $totalAmount),
+            'status'=> 'pending',
+            'table_number'=> $tableNumber,
+            'payment_method'=> $request->payment_method,
+            'notes'=> $request->notes      
+        ]);
+
+        foreach ($cart as $itemId => $item){
+           OrderItem::create([
+            'order_id'=> $order->id,
+            'item_id' => $item['id'],
+            'quantity' => $item['qty'],
+            'price'=> $item ['price'] * $item ['qty'],
+            'tax'=> 0.1 * $item['price']* $item['qty'],
+            'total_price'=> ($item['price']* $item['qty']) + (0.1 * $item['price'] * $item['qty'])
+           ]);
+        }
+
+        Session::forget('cart');
+
+        return redirect()->route('menu')->with('success', 'pesanan berhasil dibuat');
     }
 
 }
