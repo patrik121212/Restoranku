@@ -127,7 +127,7 @@ class MenuController extends Controller
 
             $itemDetails[] = [
                 'id' => $item ['id'],
-                'price' => (int) $item ['price'] + ($item ['price']* 0.1),
+                'price' => (int) ($item ['price'] + ($item ['price']* 0.1)),
                 'quantity' => $item ['qty'],
                 'name' => substr($item['name'], 0, 50),
             ];
@@ -163,20 +163,60 @@ class MenuController extends Controller
 
         Session::forget('cart');
 
-        return redirect()->route('checkout.success', ['orderId'=> $order->order_code])->with('success', 'pesanan berhasil dibuat');
-    }
-    public function checkoutSuccess($orderId){
-       $order = Order::where('order_code', $orderId)->first();
-       if (!$order){
-        return redirect()->route('menu')->with('error', 'Pesanan tidak ditemukan');
-    }
-    $orderItems = OrderItem::where('order_id', $order->id)->get();
+        if ($request->payment_method == 'tunai'){
+            return redirect()->route('checkout.success', ['orderId'=> $order->order_code])->with('success', 'pesanan berhasil dibuat');
+            // proses integrasi midtrans bisa ditambahkan disini
+        }else {
+            \Midtrans\Config::$serverKey = config('midtrans.server_key');
+            \Midtrans\Config::$isProduction = config('midtrans.is_production');
+            \Midtrans\Config::$isSanitized = true;
+            \Midtrans\Config::$is3ds = true;
+            $params = [
+                'transaction_details' => [
+                    'order_id' => $order->order_code,
+                    'gross_amount' => (int) $order->grandtotal,
+                ],
+                'item_details' => $itemDetails,
+                'customer_details' => [
+                    'first_name' => $user->fullname ?? 'Guest',
+                    'phone' => $user->phone,
+                ],
+                'payment_type' => 'qris',
+            ];
+            try {
+                $snapToken = \Midtrans\Snap::getSnapToken($params);
+                return response()->json([
+                    'status' => 'success',
+                    'snap_token' => $snapToken,
+                    'order_id' => $order->order_code,
+                ]);
 
-    if ($order->payment_method === 'qris'){
-    $order->status = 'settlement';
-    $order->save();
-    }
-    return view('customer.success', compact('order', 'orderItems'));
+                } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Gagal membuat pesanan '
+                ]);
+            }
+        }
 
-}
+        
+    }
+     public function checkoutSuccess($orderId)
+    {
+        $order = Order::where('order_code', $orderId)->first();
+
+        if (!$order) {
+            return redirect()->route('menu')->with('error', 'Pesanan tidak ditemukan');
+        }
+
+        $orderItems = OrderItem::where('order_id', $order->id)->get();
+
+        if ($order->payment_method == 'qris') {
+            $order->status  = 'settlement';
+            $order->save();
+        }
+
+        return view('customer.success', compact('order', 'orderItems'));
+
+    }
 }
