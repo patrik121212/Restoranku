@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Role;
 
 class RoleController extends Controller
 {
@@ -11,7 +12,9 @@ class RoleController extends Controller
      */
     public function index()
     {
-        //
+         $roles = Role::all();
+        return view('admin.role.index', compact('roles'));
+
     }
 
     /**
@@ -19,7 +22,7 @@ class RoleController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.role.create');
     }
 
     /**
@@ -27,7 +30,17 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'role_name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+        ]);
+
+        Role::create([
+            'role_name' => $request->role_name,
+            'description' => $request->description,
+        ]);
+
+        return redirect()->route('roles.index')->with('success', 'Berhasil menambahkan role.');
     }
 
     /**
@@ -41,9 +54,11 @@ class RoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, string $id)
     {
-        //
+      $role = Role::findOrFail($id);
+
+        return view('admin.role.edit', compact('role'));
     }
 
     /**
@@ -51,7 +66,18 @@ class RoleController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        
+        $request->validate([
+            'role_name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+        ]);
+
+        // find the role by id and update it
+        $role = Role::findOrFail($id);
+        $role->update($request->all());
+
+        return redirect()->route('roles.index')->with('success', 'Berhasil Mengupdate Role.');
+    
     }
 
     /**
@@ -59,6 +85,8 @@ class RoleController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $role = Role::findOrFail($id);
+        $role->delete();
+        return redirect()->route('roles.index')->with('success', 'Berhasil Menghapus Role.');
     }
 }
