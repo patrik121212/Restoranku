@@ -33,31 +33,33 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
-          // Validate the request data
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'category_id' => 'required|exists:categories,id',
-            'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_active' => 'required|boolean',
-        ],
-        [
-            'name.required' => 'The item name is required.',
-            'description.string' => 'The description must be a string.',
-            'price.required' => 'The price is required.',
-            'category_id.required' => 'The category is required.',
-            'img.image' => 'The image must be an image file.',
-            'img.max' => 'The image size must not exceed 2MB.',
-            'is_active.required' => 'The active status is required.',
-            'is_active.boolean' => 'The active status must be true or false.',
-        ]);
+        // Validate the request data
+        $validatedData = $request->validate(
+            [
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'price' => 'required|numeric|min:0',
+                'category_id' => 'required|exists:categories,id',
+                'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'is_active' => 'required|boolean',
+            ],
+            [
+                'name.required' => 'The item name is required.',
+                'description.string' => 'The description must be a string.',
+                'price.required' => 'The price is required.',
+                'category_id.required' => 'The category is required.',
+                'img.image' => 'The image must be an image file.',
+                'img.max' => 'The image size must not exceed 2MB.',
+                'is_active.required' => 'The active status is required.',
+                'is_active.boolean' => 'The active status must be true or false.',
+            ]
+        );
 
 
         // Handle image upload if provided
         if ($request->hasFile('img')) {
             $image = $request->file('img');
-            $imageName = time().'.'. $image->getClientOriginalExtension();
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('img_item_upload'), $imageName);
             $validatedData['img'] = $imageName;
         }
@@ -81,11 +83,11 @@ class ItemController extends Controller
      */
     public function edit(string $id)
     {
-         $item = Item::findOrFail($id);
+        $item = Item::findOrFail($id);
         $categories = Category::orderBy('cat_name', 'asc')->get();
 
         // Return the view to create a new item
-        return view('admin.item.edit', compact('item','categories'));
+        return view('admin.item.edit', compact('item', 'categories'));
     }
 
     /**
@@ -94,29 +96,31 @@ class ItemController extends Controller
     public function update(Request $request, string $id)
     {
         // Validate the request data
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'category_id' => 'required|exists:categories,id',
-            'img' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_active' => 'required|boolean',
-        ],
-        [
-            'name.required' => 'The item name is required.',
-            'description.string' => 'The description must be a string.',
-            'price.required' => 'The price is required.',
-            'category_id.required' => 'The category is required.',
-            'img.image' => 'The image must be an image file.',
-            'img.max' => 'The image size must not exceed 2MB.',
-            'is_active.required' => 'The active status is required.',
-            'is_active.boolean' => 'The active status must be true or false.',
-        ]);
+        $validatedData = $request->validate(
+            [
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'price' => 'required|numeric|min:0',
+                'category_id' => 'required|exists:categories,id',
+                'img' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'is_active' => 'required|boolean',
+            ],
+            [
+                'name.required' => 'The item name is required.',
+                'description.string' => 'The description must be a string.',
+                'price.required' => 'The price is required.',
+                'category_id.required' => 'The category is required.',
+                'img.image' => 'The image must be an image file.',
+                'img.max' => 'The image size must not exceed 2MB.',
+                'is_active.required' => 'The active status is required.',
+                'is_active.boolean' => 'The active status must be true or false.',
+            ]
+        );
 
         // Handle image upload if provided
         if ($request->hasFile('img')) {
             $image = $request->file('img');
-            $imageName = time().'.'. $image->getClientOriginalExtension();
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('img_item_upload'), $imageName);
             $validatedData['img'] = $imageName;
         }
@@ -134,7 +138,7 @@ class ItemController extends Controller
      */
     public function destroy(string $id)
     {
-        
+
         // Find the item and delete it
         $item = Item::findOrFail($id);
         $item->delete();
@@ -150,6 +154,5 @@ class ItemController extends Controller
         $item->save();
 
         return redirect()->route('items.index')->with('success', 'Item status updated successfully.');
-    
     }
 }

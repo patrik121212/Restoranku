@@ -14,12 +14,6 @@
                     <h3>Detail Pesanan</h3>
                     <p class="text-subtitle text-muted">Informasi Detail Pesanan yang Masuk</p>
                 </div>
-                {{-- <div class="col-12 col-md-6 order-md-2 order-first">
-                <a href="{{ route('items.create') }}" class="btn btn-primary float-start float-lg-end">
-                    <i class="bi bi-plus"></i>
-                    Tambah Menu
-                </a>
-            </div> --}}
             </div>
         </div>
         <section class="section">
@@ -100,7 +94,7 @@
                         </tr>
                         <tr>
                             <th colspan="4" class="text-end">Grand Total</th>
-                            <th>{{ 'Rp' . number_format($order->grand_total, 0, ',', '.') }}</th>
+                            <th>{{ 'Rp' . number_format($order->grandtotal, 0, ',', '.') }}</th>
                         </tr>
                     </table>
                 </div>

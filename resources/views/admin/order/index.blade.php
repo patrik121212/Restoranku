@@ -14,12 +14,6 @@
                     <h3>Daftar Pesanan</h3>
                     <p class="text-subtitle text-muted">Informasi Pesanan yang Masuk</p>
                 </div>
-                {{-- <div class="col-12 col-md-6 order-md-2 order-first">
-                <a href="{{ route('items.create') }}" class="btn btn-primary float-start float-lg-end">
-                    <i class="bi bi-plus"></i>
-                    Tambah Menu
-                </a>
-            </div> --}}
             </div>
         </div>
         <section class="section">
@@ -49,11 +43,10 @@
                         <tbody>
                             @foreach ($orders as $order)
                                 <tr>
-
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $order->order_code }}</td>
                                     <td>{{ $order->user->fullname ?? 'Unknown User' }}</td>
-                                    <td>{{ 'Rp' . number_format($order->grand_total, 0, ',', '.') }}</td>
+                                    <td>{{ 'Rp' . number_format($order->grandtotal, 0, ',', '.') }}</td>
                                     <td>
                                         <span
                                             class="badge {{ $order->status == 'settlement' ? 'bg-success' : ($order->status == 'pending' ? 'bg-warning' : ($order->status == 'cooked' ? 'bg-primary' : 'bg-danger')) }}">

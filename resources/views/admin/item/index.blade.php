@@ -70,15 +70,27 @@
                                         <a href="{{ route('items.edit', $item->id) }}" class="btn btn-warning btn-sm">
                                             <i class="bi bi-pencil-square"></i> Ubah
                                         </a>
-                                        <form action="{{ route('items.destroy', $item->id) }}" method="POST"
-                                            class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm"
-                                                onclick="return confirm('Apakah Anda yakin ingin menghapus item ini?')">
-                                                <i class="bi bi-trash"></i> Hapus
-                                            </button>
-                                        </form>
+                                    </td>
+                                    <td>
+                                        @if ($item->is_active == 1)
+                                            <form action="{{ route('items.updateStatus', $item->id) }}" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="is_active" value="0">
+                                                <button type="submit" class="btn btn-danger btn-sm"
+                                                    onclick="return confirm('Apakah anda yakin ingin menonaktifkan menu ini?')">
+                                                    <i class="bi bi-x"></i> Nonaktifkan
+                                                </button>
+                                            </form>
+                                        @else
+                                            <form action="{{ route('items.updateStatus', $item->id) }}" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="is_active" value="1">
+                                                <button type="submit" class="btn btn-success btn-sm"
+                                                    onclick="return confirm('Apakah anda yakin ingin mengaktifkan menu ini?')">
+                                                    <i class="bi bi-check"></i> Aktifkan
+                                                </button>
+                                            </form>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

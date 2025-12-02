@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CategoryController;
-use App\Models\Role;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -11,7 +10,7 @@ use App\Http\Controllers\OrderController;
 
 
 Route::get('/', function () {
-    return redirect()->route('menu'); ;
+    return redirect()->route('menu');;
 });
 
 Route::get('/menu', [MenuController::class, 'index'])->name('menu');
@@ -34,3 +33,4 @@ Route::resource('items', ItemController::class);
 Route::resource('roles', RoleController::class);
 Route::resource('users', UserController::class);
 Route::resource('orders', OrderController::class);
+Route::post('items/update-status/{order}', [ItemController::class, 'updateStatus'])->name('items.updateStatus');
