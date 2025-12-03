@@ -82,6 +82,25 @@
                         <span>Manajemen Ketegori</span>
                     </a>
                 </li>
+
+                {{-- logout --}}
+                <li class="sidebar-item">
+                    <form method="POST" action="{{ route('logout') }}"
+                        onclick="event.preventDefault();this.closest('form').submit();">
+                        @csrf
+                        <a href="{{ route('logout') }}" class='sidebar-link'>
+                            <i class="bi bi-person-fill"></i>
+                            <span>{{ __('Log Out') }}</span>
+                        </a>
+                    </form>
+                </li>
+
+                {{-- <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <x-dropdown-link :href="route('logout')" onclick="event.preventDefault();this.closest('form').submit();">
+                        {{ __('Log Out') }}
+                    </x-dropdown-link>
+                </form> --}}
             </ul>
         </div>
     </div>
