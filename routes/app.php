@@ -36,6 +36,13 @@ Route::middleware('role:admin|chasier')->group(function () {
     Route::resource('roles', RoleController::class);
     Route::resource('users', UserController::class);
 });
+// // settlement route
+// Route::middleware('role:admin|chasier')->group(function () {
+//     Route::post('orders/settlement/{order}', [OrderController::class, 'settlement'])->name('orders.settlement');
+// });
+// Route::middleware('role:admin|chef')->group(function () {
+//     Route::post('orders/cooked/{order}', [OrderController::class, 'cooked'])->name('orders.cooked');
+// });
 // kasir, chef dan admin middleware group
 Route::middleware('role:admin|chasier|chef')->group(function () {
     Route::get('/dashboard', function () {
@@ -43,4 +50,5 @@ Route::middleware('role:admin|chasier|chef')->group(function () {
     })->name('dashboard');
     Route::resource('orders', OrderController::class);
     Route::post('items/update-status/{order}', [ItemController::class, 'updateStatus'])->name('items.updateStatus');
+    Route::post('orders/{order}', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 });
