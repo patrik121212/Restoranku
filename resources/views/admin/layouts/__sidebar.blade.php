@@ -52,36 +52,42 @@
 
                 <li class="sidebar-item {{ request()->routeIs('orders.*') ? 'active' : '' }}">
                     <a href="{{ route('orders.index') }}" class='sidebar-link'>
-                        <i class="bi bi-card-list"></i>
+                        <i class="bi bi-journal-text"></i>
                         <span>Daftar Pesanan</span>
                     </a>
                 </li>
 
                 <li class="sidebar-item {{ request()->routeIs('items.*') ? 'active' : '' }}">
                     <a href="{{ route('items.index') }}" class='sidebar-link'>
-                        <i class="bi bi-cart-fill"></i>
+                        <i class="bi bi-menu-button-wide-fill"></i>
                         <span>Daftar Menu</span>
                     </a>
                 </li>
 
-                <li class="sidebar-item {{ request()->routeIs('users.*') ? 'active' : '' }}">
-                    <a href="{{ route('users.index') }}" class='sidebar-link'>
-                        <i class="bi bi-person-fill"></i>
-                        <span>Manajemen Karyawan</span>
-                    </a>
-                </li>
-                <li class="sidebar-item {{ request()->routeIs('roles.*') ? 'active' : '' }}">
-                    <a href="{{ route('roles.index') }}" class='sidebar-link'>
-                        <i class="bi bi-person-fill"></i>
-                        <span>Manajemen Role</span>
-                    </a>
-                </li>
-                <li class="sidebar-item {{ request()->routeIs('categories.*') ? 'active' : '' }}">
-                    <a href="{{ route('categories.index') }}" class='sidebar-link'>
-                        <i class="bi bi-person-fill"></i>
-                        <span>Manajemen Ketegori</span>
-                    </a>
-                </li>
+                {{-- Khusus admin --}}
+                @if (Auth::user()->role->role_name == 'admin')
+                    <li class="sidebar-item {{ request()->routeIs('users.*') ? 'active' : '' }}">
+                        <a href="{{ route('users.index') }}" class='sidebar-link'>
+                            <i class="bi bi-people-fill"></i>
+                            <span>Manajemen Karyawan</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item {{ request()->routeIs('roles.*') ? 'active' : '' }}">
+                        <a href="{{ route('roles.index') }}" class='sidebar-link'>
+                            <i class="bi bi-person-gear"></i>
+                            <span>Manajemen Role</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item {{ request()->routeIs('categories.*') ? 'active' : '' }}">
+                        <a href="{{ route('categories.index') }}" class='sidebar-link'>
+                            <i class="bi bi-tags-fill"></i>
+                            <span>Manajemen Ketegori</span>
+                        </a>
+                    </li>
+                @endif
+
+
+
 
                 {{-- logout --}}
                 <li class="sidebar-item">
@@ -89,7 +95,7 @@
                         onclick="event.preventDefault();this.closest('form').submit();">
                         @csrf
                         <a href="{{ route('logout') }}" class='sidebar-link'>
-                            <i class="bi bi-person-fill"></i>
+                            <i class="bi bi-box-arrow-left"></i>
                             <span>{{ __('Log Out') }}</span>
                         </a>
                     </form>
