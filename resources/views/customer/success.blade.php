@@ -41,7 +41,7 @@
                     </tr>
                     <tr>
                         <td>Total</td>
-                        <td class="text-end fw-bold">{{ 'Rp' . number_format($order->grand_total, 0, ',', '.') }}</td>
+                        <td class="text-end fw-bold">{{ 'Rp' . number_format($order->grandtotal, 0, ',', '.') }}</td>
                     </tr>
                 </tbody>
             </table>

@@ -14,6 +14,12 @@
                     <h3>Daftar Pesanan</h3>
                     <p class="text-subtitle text-muted">Informasi Pesanan yang Masuk</p>
                 </div>
+                {{-- <div class="col-12 col-md-6 order-md-2 order-first">
+                <a href="{{ route('items.create') }}" class="btn btn-primary float-start float-lg-end">
+                    <i class="bi bi-plus"></i>
+                    Tambah Menu
+                </a>
+            </div> --}}
             </div>
         </div>
         <section class="section">
@@ -43,9 +49,10 @@
                         <tbody>
                             @foreach ($orders as $order)
                                 <tr>
+
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $order->order_code }}</td>
-                                    <td>{{ $order->user->fullname ?? 'Unknown User' }}</td>
+                                    <td>{{ $order->user->fullname }}</td>
                                     <td>{{ 'Rp' . number_format($order->grandtotal, 0, ',', '.') }}</td>
                                     <td>
                                         <span
@@ -65,8 +72,8 @@
                                         </span>
                                     </td>
                                     <td>
-                                        @if (Auth::check() && (Auth::user()->role->role_name == 'admin' || Auth::user()->role->role_name == 'chasier'))
-                                            @if ($order->status == 'pending' && $order->payment_method == 'tunai')
+                                        @if (Auth::user()->role->role_name == 'admin' || Auth::user()->role->role_name == 'chasier')
+                                            @if ($order->status == 'pending' && ($order->payment_method == 'tunai' || $order->payment_method == 'qris'))
                                                 <form action="{{ route('orders.updateStatus', $order->id) }}"
                                                     method="POST">
                                                     @csrf
@@ -75,7 +82,7 @@
                                                     </button>
                                                 </form>
                                             @endif
-                                        @elseif(Auth::check() && Auth::user()->role->role_name == 'chef' && $order->status == 'settlement')
+                                        @elseif(Auth::user()->role->role_name == 'chef' && $order->status == 'settlement')
                                             <form action="{{ route('orders.updateStatus', $order->id) }}" method="POST">
                                                 @csrf
                                                 <button type="submit" class="btn btn-success btn-sm">
