@@ -11,7 +11,7 @@ use App\Http\Controllers\OrderController;
 
 
 Route::get('/', function () {
-    return redirect()->route('menu');;
+    return redirect()->route('menu');
 });
 
 Route::get('/menu', [MenuController::class, 'index'])->name('menu');
